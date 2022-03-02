@@ -26,6 +26,7 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 - [x] [lab10. Scheme](./Labs/lab10.scm)
 - [x] [lab11. Interpreters](./Labs/lab11)
 - [x] [lab12. Regular Expressions, BNF](./Labs/lab12)
+- [x] [lab13. SQL](./Labs/lab13)
 
 ## Hws
 
