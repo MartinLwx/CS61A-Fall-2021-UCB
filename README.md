@@ -1,4 +1,4 @@
-### CS61A-Fall-2021
+# CS61A-Fall-2021
 
 ## Hi 👋
 
@@ -43,7 +43,7 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 
 
 
-## Looking for answers from other cs-courses ?
+## Looking for answers for other cs-courses ?
 
 :hugs: Welcome to check my repo [cs-courses](https://github.com/MartinLwx/cs-courses). 
 
