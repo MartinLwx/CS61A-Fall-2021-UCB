@@ -38,6 +38,7 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 - [x] [hw07. Scheme](./Hws/hw07.scm)
 - [x] [hw08. Scheme Lists](./Hws/hw08.scm)
 - [x] [hw09. Regular Expressions](./Hws/hw09.py)
+- [x] [hw10. BNF, SQL](./Hws/hw10)
 
 ## Projects
 
