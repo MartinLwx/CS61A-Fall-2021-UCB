@@ -44,7 +44,7 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 
 ## Projects
 
-
+- [x] [Project01. Hog](./Projects/hog)
 
 ## Looking for answers for other cs-courses ?
 
