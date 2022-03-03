@@ -1,0 +1,6 @@
+lines: line (newline line)* | line newline | line
+line: word ("," word)*
+word: WORD | 
+newline: "\n"
+
+%import common.WORD
