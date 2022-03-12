@@ -66,12 +66,12 @@ To help visualize how all the classes fit together, we've also created an object
 ---
 
 ```bash
-> python3 hog_gui.py
+python3 gui.py [-h] [-d DIFFICULTY] [-w] [--food FOOD]
 ```
 
 ## Source
 
 ---
 
-
+https://inst.eecs.berkeley.edu/~cs61a/fa21/proj/ants/#optional-problem-2
 
