@@ -73,5 +73,5 @@ python3 gui.py [-h] [-d DIFFICULTY] [-w] [--food FOOD]
 
 ---
 
-https://inst.eecs.berkeley.edu/~cs61a/fa21/proj/ants/#optional-problem-2
+https://inst.eecs.berkeley.edu/~cs61a/fa21/proj/ants/
 
