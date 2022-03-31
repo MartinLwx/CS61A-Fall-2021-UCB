@@ -47,6 +47,7 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 - [x] [Project01. Hog](./Projects/hog)
 - [x] [Project02. Cats](./Projects/cats)
 - [x] [Project03. Ants](./Projects/ants)
+- [x] [Project04. Scheme Interpreter(INCOMPLETE)](./Projects/scheme)
 
 ## Looking for answers for other cs-courses ?
 
