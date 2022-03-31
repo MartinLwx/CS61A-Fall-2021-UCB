@@ -49,6 +49,16 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 - [x] [Project03. Ants](./Projects/ants)
 - [x] [Project04. Scheme Interpreter(INCOMPLETE)](./Projects/scheme)
 
+## Highlights
+
+---
+
+-   High order functions 👍
+-   Recursion 👍 *I really like this one*
+-   Scheme language 👍 *This is brand new knowledge for me*
+-   BNF 👍
+-   Abstraction 👍 The most import concept in CS in my opinion.
+
 ## Looking for answers for other cs-courses ?
 
 :hugs: Welcome to check my repo [cs-courses](https://github.com/MartinLwx/cs-courses). 
