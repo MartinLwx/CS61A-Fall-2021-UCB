@@ -513,8 +513,8 @@ class Bee(Insect):
                 self.is_slow = False
             if gamestate.time % 2 == 0 and self.health > 0 and destination is not None:
                 self.move_to(destination)
-            else:
-                # is_slow + is_scared, we need to cancel `self.scared_turns -= 1`  \
+            elif self.is_scared:
+                # is_slow + is_scared + gamestate.time is odd, we need to cancel `self.scared_turns -= 1`  \
                 # if we didn't move
                 self.scared_turns += 1
         else:
