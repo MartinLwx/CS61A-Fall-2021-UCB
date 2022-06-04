@@ -1,5 +1,3 @@
-# CS61A-Fall-2021
-
 ## Hi 👋
 
 This is my personal learning record for CS61A-Fall-2021 of UC-Berkeley. I once heard that it's an amazing cs course and it's very helpful for those who are new to programming, so I decided to take this course to see if I could learn something new.
@@ -10,7 +8,9 @@ To be honest, this is the best introductory computer programming class I've ever
 
 
 
-The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want a better reading experience, you may visit my [blog](https://martinlwx.github.io).**
+The official website: <https://inst.eecs.berkeley.edu/~cs61a/fa21/>. **If you want a better reading experience, you may visit my [blog](https://martinlwx.github.io).**
+## Resources
+All materials can be found on this offical page: <https://inst.eecs.berkeley.edu/~cs61a/fa21/>
 
 ## Labs
 
@@ -51,13 +51,11 @@ The official website: https://inst.eecs.berkeley.edu/~cs61a/fa21/. **If you want
 
 ## Highlights
 
----
-
 -   High order functions 👍
 -   Recursion 👍 *I really like this one*
 -   Scheme language 👍 *This is brand new knowledge for me*
 -   BNF 👍
--   Abstraction 👍 The most import concept in CS in my opinion.
+-   Abstraction 👍 *The most import concept in CS in my opinion.*
 
 ## Looking for answers for other cs-courses ?
 
