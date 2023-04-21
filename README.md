@@ -47,7 +47,7 @@ All materials can be found on this offical page: <https://inst.eecs.berkeley.edu
 - [x] [Project01. Hog](./Projects/hog)
 - [x] [Project02. Cats](./Projects/cats)
 - [x] [Project03. Ants](./Projects/ants)
-- [x] [Project04. Scheme Interpreter(INCOMPLETE)](./Projects/scheme)
+- [x] [Project04. Scheme Interpreter(Problem 1 ~ 16)](./Projects/scheme)
 
 ## Highlights
 

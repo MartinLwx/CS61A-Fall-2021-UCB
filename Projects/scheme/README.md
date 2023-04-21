@@ -41,20 +41,16 @@ In addition, there will be a completely optional open-ended art contest (release
 
 **This project is incomplete**. 😈 I kept the test files for future review(when I am ready)
 
-
-
 Problems to be solved:
 
--   [ ] Problem 3 (1.0 / 2)
--   [ ] Problem 13 (1.0 / 2)
--   [ ] Problem EC (0.0 / 2)
+- [ ] Problem EC (0.0 / 2)
 
 ## How to run
 
 ---
 
 ```bash
-python3 scheme.py
+$ python3 scheme.py
 ```
 
 ## Source

@@ -15,17 +15,17 @@ class Pair:
         self.rest = rest
 
     def __repr__(self):
-        return 'Pair({0}, {1})'.format(repr(self.first), repr(self.rest))
+        return "Pair({0}, {1})".format(repr(self.first), repr(self.rest))
 
     def __str__(self):
-        s = '(' + repl_str(self.first)
+        s = "(" + repl_str(self.first)
         rest = self.rest
         while isinstance(rest, Pair):
-            s += ' ' + repl_str(rest.first)
+            s += " " + repl_str(rest.first)
             rest = rest.rest
         if rest is not nil:
-            s += ' . ' + repl_str(rest)
-        return s + ')'
+            s += " . " + repl_str(rest)
+        return s + ")"
 
     def __len__(self):
         n, rest = 1, self.rest
@@ -33,7 +33,7 @@ class Pair:
             n += 1
             rest = rest.rest
         if rest is not nil:
-            raise TypeError('length attempted on improper list')
+            raise TypeError("length attempted on improper list")
         return n
 
     def __eq__(self, p):
@@ -47,26 +47,27 @@ class Pair:
         if self.rest is nil or isinstance(self.rest, Pair):
             return Pair(mapped, self.rest.map(fn))
         else:
-            raise TypeError('ill-formed list (cdr is a promise)')
+            raise TypeError("ill-formed list (cdr is a promise)")
 
     def flatmap(self, fn):
         """Return a Scheme list after flatmapping Python function FN to SELF."""
         from scheme_builtins import scheme_append
+
         mapped = fn(self.first)
         if self.rest is nil or isinstance(self.rest, Pair):
             return scheme_append(mapped, self.rest.flatmap(fn))
         else:
-            raise TypeError('ill-formed list (cdr is a promise)')
+            raise TypeError("ill-formed list (cdr is a promise)")
 
 
 class nil:
     """The empty list"""
 
     def __repr__(self):
-        return 'nil'
+        return "nil"
 
     def __str__(self):
-        return '()'
+        return "()"
 
     def __len__(self):
         return 0
@@ -89,6 +90,6 @@ def repl_str(val):
         return "#f"
     if val is None:
         return "undefined"
-    if isinstance(val, str) and val and val[0] == "\"":
-        return "\"" + repr(val[1:-1])[1:-1] + "\""
+    if isinstance(val, str) and val and val[0] == '"':
+        return '"' + repr(val[1:-1])[1:-1] + '"'
     return str(val)

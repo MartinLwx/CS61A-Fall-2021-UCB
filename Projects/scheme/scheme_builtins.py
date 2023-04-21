@@ -23,10 +23,12 @@ BUILTINS = []
 
 def builtin(*names, expect_env=False):
     """An annotation to convert a Python function into a BuiltinProcedure."""
+
     def add(py_func):
         for name in names:
             BUILTINS.append((name, py_func, names[0], expect_env))
         return py_func
+
     return add
 
 
@@ -67,36 +69,39 @@ def scheme_eqp(x, y):
 
 @builtin("pair?")
 def scheme_pairp(x):
-    return type(x).__name__ == 'Pair'
+    return type(x).__name__ == "Pair"
 
 
 @builtin("scheme-valid-cdr?")
 def scheme_valid_cdrp(x):
     return scheme_pairp(x) or scheme_nullp(x) or scheme_promisep(x)
 
+
 # Streams
 
 
 @builtin("promise?")
 def scheme_promisep(x):
-    return type(x).__name__ == 'Promise'
+    return type(x).__name__ == "Promise"
 
 
 @builtin("force")
 def scheme_force(x):
-    validate_type(x, scheme_promisep, 0, 'promise')
+    validate_type(x, scheme_promisep, 0, "promise")
     return x.evaluate()
 
 
 @builtin("cdr-stream")
 def scheme_cdr_stream(x):
-    validate_type(x, lambda x: scheme_pairp(x) and scheme_promisep(x.rest), 0, 'cdr-stream')
+    validate_type(
+        x, lambda x: scheme_pairp(x) and scheme_promisep(x.rest), 0, "cdr-stream"
+    )
     return scheme_force(x.rest)
 
 
 @builtin("length")
 def scheme_length(x):
-    validate_type(x, scheme_listp, 0, 'length')
+    validate_type(x, scheme_listp, 0, "length")
     if x is nil:
         return 0
     return len(x)
@@ -109,28 +114,29 @@ def scheme_cons(x, y):
 
 @builtin("car")
 def scheme_car(x):
-    validate_type(x, scheme_pairp, 0, 'car')
+    validate_type(x, scheme_pairp, 0, "car")
     return x.first
 
 
 @builtin("cdr")
 def scheme_cdr(x):
-    validate_type(x, scheme_pairp, 0, 'cdr')
+    validate_type(x, scheme_pairp, 0, "cdr")
     return x.rest
+
 
 # Mutation extras
 
 
 @builtin("set-car!")
 def scheme_set_car(x, y):
-    validate_type(x, scheme_pairp, 0, 'set-car!')
+    validate_type(x, scheme_pairp, 0, "set-car!")
     x.first = y
 
 
 @builtin("set-cdr!")
 def scheme_set_cdr(x, y):
-    validate_type(x, scheme_pairp, 0, 'set-cdr!')
-    validate_type(y, scheme_valid_cdrp, 1, 'set-cdr!')
+    validate_type(x, scheme_pairp, 0, "set-cdr!")
+    validate_type(y, scheme_valid_cdrp, 1, "set-cdr!")
     x.rest = y
 
 
@@ -150,7 +156,7 @@ def scheme_append(*vals):
     for i in range(len(vals) - 2, -1, -1):
         v = vals[i]
         if v is not nil:
-            validate_type(v, scheme_pairp, i, 'append')
+            validate_type(v, scheme_pairp, i, "append")
             r = p = Pair(v.first, result)
             v = v.rest
             while scheme_pairp(v):
@@ -264,21 +270,47 @@ def scheme_remainder(val0, val1):
 def number_fn(module, name, fallback=None):
     """A Scheme built-in procedure that calls the numeric Python function named
     MODULE.FN."""
-    py_fn = getattr(module, name) if fallback is None else getattr(module, name, fallback)
+    py_fn = (
+        getattr(module, name) if fallback is None else getattr(module, name, fallback)
+    )
 
     def scheme_fn(*vals):
         _check_nums(*vals)
         return py_fn(*vals)
+
     return scheme_fn
 
 
 # Add number functions in the math module as built-in procedures in Scheme
-for _name in ["acos", "acosh", "asin", "asinh", "atan", "atan2", "atanh",
-              "ceil", "copysign", "cos", "cosh", "degrees", "floor", "log",
-              "log10", "log1p", "radians", "sin", "sinh", "sqrt",
-              "tan", "tanh", "trunc"]:
+for _name in [
+    "acos",
+    "acosh",
+    "asin",
+    "asinh",
+    "atan",
+    "atan2",
+    "atanh",
+    "ceil",
+    "copysign",
+    "cos",
+    "cosh",
+    "degrees",
+    "floor",
+    "log",
+    "log10",
+    "log1p",
+    "radians",
+    "sin",
+    "sinh",
+    "sqrt",
+    "tan",
+    "tanh",
+    "trunc",
+]:
     builtin(_name)(number_fn(math, _name))
-builtin("log2")(number_fn(math, "log2", lambda x: math.log(x, 2)))  # Python 2 compatibility
+builtin("log2")(
+    number_fn(math, "log2", lambda x: math.log(x, 2))
+)  # Python 2 compatibility
 
 
 def _numcomp(op, x, y):
@@ -328,6 +360,7 @@ def scheme_zerop(x):
     _check_nums(x)
     return x == 0
 
+
 ##
 # Other operations
 ##
@@ -370,15 +403,15 @@ def scheme_exit():
 
 @builtin("map", expect_env=True)
 def scheme_map(fn, s, env):
-    validate_type(fn, scheme_procedurep, 0, 'map')
-    validate_type(s, scheme_listp, 1, 'map')
+    validate_type(fn, scheme_procedurep, 0, "map")
+    validate_type(s, scheme_listp, 1, "map")
     return s.map(lambda x: complete_apply(fn, Pair(x, nil), env))
 
 
 @builtin("filter", expect_env=True)
 def scheme_filter(fn, s, env):
-    validate_type(fn, scheme_procedurep, 0, 'filter')
-    validate_type(s, scheme_listp, 1, 'filter')
+    validate_type(fn, scheme_procedurep, 0, "filter")
+    validate_type(s, scheme_listp, 1, "filter")
     head, current = nil, nil
     while s is not nil:
         item, s = s.first, s.rest
@@ -394,9 +427,9 @@ def scheme_filter(fn, s, env):
 
 @builtin("reduce", expect_env=True)
 def scheme_reduce(fn, s, env):
-    validate_type(fn, scheme_procedurep, 0, 'reduce')
-    validate_type(s, lambda x: x is not nil, 1, 'reduce')
-    validate_type(s, scheme_listp, 1, 'reduce')
+    validate_type(fn, scheme_procedurep, 0, "reduce")
+    validate_type(s, lambda x: x is not nil, 1, "reduce")
+    validate_type(s, scheme_listp, 1, "reduce")
     value, s = s.first, s.rest
     while s is not nil:
         value = complete_apply(fn, scheme_list(value, s.first), env)
@@ -411,14 +444,16 @@ def scheme_load(*args):
     with verbosity determined by QUIET (default true)."""
     if not (2 <= len(args) <= 3):
         expressions = args[:-1]
-        raise SchemeError('"load" given incorrect number of arguments: '
-                          '{0}'.format(len(expressions)))
+        raise SchemeError(
+            '"load" given incorrect number of arguments: '
+            "{0}".format(len(expressions))
+        )
     sym = args[0]
     quiet = args[1] if len(args) > 2 else True
     env = args[-1]
-    if (scheme_stringp(sym)):
+    if scheme_stringp(sym):
         sym = eval(sym)
-    validate_type(sym, scheme_symbolp, 0, 'load')
+    validate_type(sym, scheme_symbolp, 0, "load")
     with scheme_open(sym) as infile:
         lines = infile.readlines()
     args = (lines, None) if quiet else (lines,)
@@ -427,6 +462,7 @@ def scheme_load(*args):
         return buffer_lines(*args)
 
     from scheme import read_eval_print_loop
+
     read_eval_print_loop(next_line, env, quiet=quiet, report_errors=True)
 
 
@@ -439,6 +475,7 @@ def scheme_load_all(directory, env):
     assert scheme_stringp(directory)
     directory = directory[1:-1]
     import os
+
     for x in sorted(os.listdir(".")):
         if not x.endswith(".scm"):
             continue
@@ -451,10 +488,10 @@ def scheme_open(filename):
     try:
         return open(filename)
     except IOError as exc:
-        if filename.endswith('.scm'):
+        if filename.endswith(".scm"):
             raise SchemeError(str(exc))
     try:
-        return open(filename + '.scm')
+        return open(filename + ".scm")
     except IOError as exc:
         raise SchemeError(str(exc))
 
@@ -468,6 +505,7 @@ turtle = CANVAS = None
 
 def _title():
     import turtle as _nativeturtle
+
     _nativeturtle.title("Scheme Turtles")
 
 
@@ -475,7 +513,9 @@ def attempt_install_tk_turtle():
     try:
         from abstract_turtle import turtle
     except ImportError:
-        raise SchemeError("Could not find abstract_turtle. This should never happen in student-facing situations. If you are a student, please file a bug on Piazza.")
+        raise SchemeError(
+            "Could not find abstract_turtle. This should never happen in student-facing situations. If you are a student, please file a bug on Piazza."
+        )
     return turtle
 
 
@@ -483,11 +523,16 @@ def attempt_create_tk_canvas():
     try:
         import tkinter as _
     except:
-        raise SchemeError("\n".join([
-            "Could not import tkinter, so the tk-turtle will not work.",
-            "Either install python with tkinter support or run in pillow-turtle mode"
-        ]))
+        raise SchemeError(
+            "\n".join(
+                [
+                    "Could not import tkinter, so the tk-turtle will not work.",
+                    "Either install python with tkinter support or run in pillow-turtle mode",
+                ]
+            )
+        )
     from abstract_turtle import TkCanvas
+
     return TkCanvas(1000, 1000, init_hook=_title)
 
 
@@ -496,13 +541,18 @@ def attempt_create_pillow_canvas():
         import PIL as _
         import numpy as _
     except:
-        raise SchemeError("\n".join([
-            "Could not import abstract_turtle[pillow_canvas]'s dependencies.",
-            "To install these packages, run",
-            "    python3 -m pip install 'abstract_turtle[pillow_canvas]'",
-            "You can also run in tk-turtle mode by removing the flag `--pillow-turtle`"
-        ]))
+        raise SchemeError(
+            "\n".join(
+                [
+                    "Could not import abstract_turtle[pillow_canvas]'s dependencies.",
+                    "To install these packages, run",
+                    "    python3 -m pip install 'abstract_turtle[pillow_canvas]'",
+                    "You can also run in tk-turtle mode by removing the flag `--pillow-turtle`",
+                ]
+            )
+        )
     from abstract_turtle import PillowCanvas
+
     return PillowCanvas(1000, 1000)
 
 

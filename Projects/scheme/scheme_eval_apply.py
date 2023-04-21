@@ -29,15 +29,21 @@ def scheme_eval(expr, env, _=None):  # Optional third argument is ignored
 
     # All non-atomic expressions are lists (combinations)
     if not scheme_listp(expr):
-        raise SchemeError('malformed list: {0}'.format(repl_str(expr)))
+        raise SchemeError("malformed list: {0}".format(repl_str(expr)))
+
     first, rest = expr.first, expr.rest
     if scheme_symbolp(first) and first in scheme_forms.SPECIAL_FORMS:
         return scheme_forms.SPECIAL_FORMS[first](rest, env)
     else:
-        procedure = scheme_eval(first, env)                  # evaluate the operator
-        validate_procedure(procedure)                        
-        operands = rest.map(lambda x: scheme_eval(x, env))   # evaluate all the operands
-        return scheme_apply(procedure, operands, env)
+        # Evaluate the operator(first argument)
+        operator = scheme_eval(first, env)
+        validate_procedure(operator)
+        # Evaluate all of the operands(other arguments)
+        from functools import partial
+
+        operands = rest.map(partial(scheme_eval, env=env))
+
+        return scheme_apply(operator, operands, env)
 
 
 def scheme_apply(procedure, args, env):
@@ -45,19 +51,23 @@ def scheme_apply(procedure, args, env):
     Frame ENV, the current environment."""
     validate_procedure(procedure)
     if isinstance(procedure, BuiltinProcedure):
-        # get argument list from arg(Pair)
+        # Convert the Scheme list to a Python list of arguments
         args_list = []
         pos = args
-        while pos:
-            if pos.first is not None:
+        while pos is not nil:
+            if pos.first is not nil:
                 args_list.append(pos.first)
+            else:
+                args_list.append(nil)
             pos = pos.rest
+        # Add the current environment if procedure.expect_env == True
         if procedure.expect_env:
             args_list.append(env)
+        # Call procedure.py_func on all arguments
         try:
             return procedure.py_func(*args_list)
-        except TypeError:
-            raise SchemeError('incorrect number of arguments')
+        except TypeError as e:
+            raise SchemeError(f"incorrect number of arguments, {e}")
     elif isinstance(procedure, LambdaProcedure):
         child_frame = procedure.env.make_child_frame(procedure.formals, args)
         return eval_all(procedure.body, child_frame)
@@ -85,16 +95,17 @@ def eval_all(expressions, env):
     """
     if expressions is nil:
         return None
-    if expressions.rest == nil:
-        return scheme_eval(expressions.first, env)  # replace this with lines of your own code
-    scheme_eval(expressions.first, env)
-    return eval_all(expressions.rest, env)
-
+    res = scheme_eval(expressions.first, env)
+    if expressions.rest is nil:
+        return res
+    else:
+        return eval_all(expressions.rest, env)
 
 
 ##################
 # Tail Recursion #
 ##################
+
 
 class Unevaluated:
     """An expression and an environment in which it is to be evaluated."""
@@ -117,6 +128,7 @@ def complete_apply(procedure, args, env):
 
 def optimize_tail_calls(original_scheme_eval):
     """Return a properly tail recursive version of an eval function."""
+
     def optimized_eval(expr, env, tail=False):
         """Evaluate Scheme expression EXPR in Frame ENV. If TAIL,
         return an Unevaluated containing an expression for further evaluation.
@@ -128,6 +140,7 @@ def optimize_tail_calls(original_scheme_eval):
         # BEGIN PROBLEM EC
         "*** YOUR CODE HERE ***"
         # END PROBLEM EC
+
     return optimized_eval
 
 

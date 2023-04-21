@@ -17,8 +17,16 @@ from ucb import main, trace
 # Input/Output #
 ################
 
-def read_eval_print_loop(next_line, env, interactive=False, quiet=False,
-                         startup=False, load_files=(), report_errors=False):
+
+def read_eval_print_loop(
+    next_line,
+    env,
+    interactive=False,
+    quiet=False,
+    startup=False,
+    load_files=(),
+    report_errors=False,
+):
     """Read and evaluate input until an end of file or keyboard interrupt."""
     if startup:
         for filename in load_files:
@@ -36,18 +44,20 @@ def read_eval_print_loop(next_line, env, interactive=False, quiet=False,
                 if isinstance(err, SyntaxError):
                     err = SchemeError(err)
                     raise err
-            if (isinstance(err, RuntimeError) and
-                'maximum recursion depth exceeded' not in getattr(err, 'args')[0]):
+            if (
+                isinstance(err, RuntimeError)
+                and "maximum recursion depth exceeded" not in getattr(err, "args")[0]
+            ):
                 raise
             elif isinstance(err, RuntimeError):
-                print('Error: maximum recursion depth exceeded')
+                print("Error: maximum recursion depth exceeded")
             else:
-                print('Error:', err)
+                print("Error:", err)
         except KeyboardInterrupt:  # <Control>-C
             if not startup:
                 raise
             print()
-            print('KeyboardInterrupt')
+            print("KeyboardInterrupt")
             if not interactive:
                 return
         except EOFError:  # <Control>-D, etc.
@@ -60,17 +70,17 @@ def add_builtins(frame, funcs_and_names):
     as built-in procedures. Each item in FUNCS_AND_NAMES has the form
     (NAME, PYTHON-FUNCTION, INTERNAL-NAME)."""
     for name, py_func, proc_name, expect_env in funcs_and_names:
-        frame.define(name, BuiltinProcedure(py_func, name=proc_name, expect_env=expect_env))
+        frame.define(
+            name, BuiltinProcedure(py_func, name=proc_name, expect_env=expect_env)
+        )
 
 
 def create_global_frame():
     """Initialize and return a single-frame environment with built-in names."""
     env = Frame(None)
-    env.define('eval',
-               BuiltinProcedure(scheme_eval, True, 'eval'))
-    env.define('apply',
-               BuiltinProcedure(complete_apply, True, 'apply'))
-    env.define('undefined', None)
+    env.define("eval", BuiltinProcedure(scheme_eval, True, "eval"))
+    env.define("apply", BuiltinProcedure(complete_apply, True, "apply"))
+    env.define("undefined", None)
     add_builtins(env, BUILTINS)
     return env
 
@@ -78,22 +88,35 @@ def create_global_frame():
 @main
 def run(*argv):
     import argparse
-    parser = argparse.ArgumentParser(description='CS 61A Scheme Interpreter')
-    parser.add_argument('--pillow-turtle', action='store_true',
-                        help='run with pillow-based turtle. This is much faster for rendering but there is no GUI')
-    parser.add_argument('--turtle-save-path', default=None,
-                        help='save the image to this location when done')
-    parser.add_argument('-load', '-i', action='store_true',
-                        help='run file interactively')
-    parser.add_argument('file', nargs='?',
-                        type=argparse.FileType('r'), default=None,
-                        help='Scheme file to run')
+
+    parser = argparse.ArgumentParser(description="CS 61A Scheme Interpreter")
+    parser.add_argument(
+        "--pillow-turtle",
+        action="store_true",
+        help="run with pillow-based turtle. This is much faster for rendering but there is no GUI",
+    )
+    parser.add_argument(
+        "--turtle-save-path",
+        default=None,
+        help="save the image to this location when done",
+    )
+    parser.add_argument(
+        "-load", "-i", action="store_true", help="run file interactively"
+    )
+    parser.add_argument(
+        "file",
+        nargs="?",
+        type=argparse.FileType("r"),
+        default=None,
+        help="Scheme file to run",
+    )
     args = parser.parse_args()
 
     import builtins
+
     builtins.TK_TURTLE = not args.pillow_turtle
     builtins.TURTLE_SAVE_PATH = args.turtle_save_path
-    sys.path.insert(0, '')
+    sys.path.insert(0, "")
 
     next_line = buffer_input
     interactive = True
@@ -101,14 +124,20 @@ def run(*argv):
 
     if args.file is not None:
         if args.load:
-            load_files.append(getattr(args.file, 'name'))
+            load_files.append(getattr(args.file, "name"))
         else:
             lines = args.file.readlines()
 
             def next_line():
                 return buffer_lines(lines)
+
             interactive = False
 
-    read_eval_print_loop(next_line, create_global_frame(), startup=True,
-                         interactive=interactive, load_files=load_files)
+    read_eval_print_loop(
+        next_line,
+        create_global_frame(),
+        startup=True,
+        interactive=interactive,
+        load_files=load_files,
+    )
     tscheme_exitonclick()

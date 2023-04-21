@@ -31,26 +31,30 @@ def do_define_form(expressions, env):
     >>> scheme_eval(read_line("(f 3)"), env)
     5
     """
-    validate_form(expressions, 2)  # Checks that expressions is a list of length at least 2
+    validate_form(
+        expressions, 2
+    )  # Checks that expressions is a list of length at least 2
     signature = expressions.first
     if scheme_symbolp(signature):
         # assigning a name to a value e.g. (define x (+ 1 2))
-        validate_form(expressions, 2, 2)  # Checks that expressions is a list of length exactly 2
+        validate_form(
+            expressions, 2, 2
+        )  # Checks that expressions is a list of length exactly 2
         env.define(signature, scheme_eval(expressions.rest.first, env))
         return signature
     elif isinstance(signature, Pair) and scheme_symbolp(signature.first):
         # defining a named procedure e.g. (define (f x y) (+ x y))
 
         # the signature is (f x y)
-        formals = signature.rest     # (x y)
+        formals = signature.rest  # (x y)
         validate_formals(formals)
 
         # now we need to parse (+ x y)
         env.define(signature.first, LambdaProcedure(formals, expressions.rest, env))
-        return signature.first       # f
+        return signature.first  # f
     else:
         bad_signature = signature.first if isinstance(signature, Pair) else signature
-        raise SchemeError('non-symbol: {0}'.format(bad_signature))
+        raise SchemeError("non-symbol: {0}".format(bad_signature))
 
 
 def do_quote_form(expressions, env):
@@ -88,7 +92,6 @@ def do_lambda_form(expressions, env):
     formals = expressions.first
     validate_formals(formals)
     return LambdaProcedure(formals, expressions.rest, env)
-
 
 
 def do_if_form(expressions, env):
@@ -170,10 +173,10 @@ def do_cond_form(expressions, env):
     while expressions is not nil:
         clause = expressions.first
         validate_form(clause, 1)
-        if clause.first == 'else':
+        if clause.first == "else":
             test = True
             if expressions.rest != nil:
-                raise SchemeError('else must be last')
+                raise SchemeError("else must be last")
         else:
             test = scheme_eval(clause.first, env)
         if is_scheme_true(test):
@@ -202,18 +205,20 @@ def make_let_frame(bindings, env):
     list in a let expression: each item must be a list containing a symbol
     and a Scheme expression."""
     if not scheme_listp(bindings):
-        raise SchemeError('bad bindings list in let form')
+        raise SchemeError("bad bindings list in let form")
     names = values = nil
-    # type(bingdings) = Pair
-    # type(names) == type(values) == Pair
+
+    # bingding: (<name> <expression>)
+    # bingdings: ( (<name1> <expression1>) (<name2> <expression2>) ...)
     pos = bindings
     while pos is not nil:
-        front = pos.first
-        validate_form(front, 2, 2)
+        front = pos.first  # i.e the first binding
+        validate_form(front, 2, 2)  # verify the structure is (<name> <expression>)
         names = Pair(front.first, names)
         values = Pair(eval_all(front.rest, env), values)
         pos = pos.rest
     validate_formals(names)
+
     return env.make_child_frame(names, values)
 
 
@@ -234,18 +239,19 @@ def do_define_macro(expressions, env):
 def do_quasiquote_form(expressions, env):
     """Evaluate a quasiquote form with parameters EXPRESSIONS in
     Frame ENV."""
+
     def quasiquote_item(val, env, level):
         """Evaluate Scheme expression VAL that is nested at depth LEVEL in
         a quasiquote form in Frame ENV."""
         if not scheme_pairp(val):
             return val
-        if val.first == 'unquote':
+        if val.first == "unquote":
             level -= 1
             if level == 0:
                 expressions = val.rest
                 validate_form(expressions, 1, 1)
                 return scheme_eval(expressions.first, env)
-        elif val.first == 'quasiquote':
+        elif val.first == "quasiquote":
             level += 1
 
         return val.map(lambda elem: quasiquote_item(elem, env, level))
@@ -255,12 +261,13 @@ def do_quasiquote_form(expressions, env):
 
 
 def do_unquote(expressions, env):
-    raise SchemeError('unquote outside of quasiquote')
+    raise SchemeError("unquote outside of quasiquote")
 
 
 #################
 # Dynamic Scope #
 #################
+
 
 def do_mu_form(expressions, env):
     """Evaluate a mu form."""
@@ -271,17 +278,17 @@ def do_mu_form(expressions, env):
 
 
 SPECIAL_FORMS = {
-    'and': do_and_form,
-    'begin': do_begin_form,
-    'cond': do_cond_form,
-    'define': do_define_form,
-    'if': do_if_form,
-    'lambda': do_lambda_form,
-    'let': do_let_form,
-    'or': do_or_form,
-    'quote': do_quote_form,
-    'define-macro': do_define_macro,
-    'quasiquote': do_quasiquote_form,
-    'unquote': do_unquote,
-    'mu': do_mu_form,
+    "and": do_and_form,
+    "begin": do_begin_form,
+    "cond": do_cond_form,
+    "define": do_define_form,
+    "if": do_if_form,
+    "lambda": do_lambda_form,
+    "let": do_let_form,
+    "or": do_or_form,
+    "quote": do_quote_form,
+    "define-macro": do_define_macro,
+    "quasiquote": do_quasiquote_form,
+    "unquote": do_unquote,
+    "mu": do_mu_form,
 }
