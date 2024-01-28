@@ -43,7 +43,7 @@ def cs_classes(post):
     >>> cs_classes("What are some good CS upper division courses? I was thinking about CS 161 or CS 169a")
     True
     """
-    return bool(re.search(r'cs|CS ?\d+[ABCabc]?', post))
+    return bool(re.search(r'[Cc][Ss] ?\d+[ABCabc]?', post))
 
 
 import re
