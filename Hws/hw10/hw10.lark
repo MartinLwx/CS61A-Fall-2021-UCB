@@ -5,12 +5,12 @@ group: "(" regex* ")"
 pipe: regex "|" regex
 
 range: NUMBER "-" NUMBER | LETTER "-" LETTER
-class: "[" range* character* range* character* "]"
+class: "[" (range|character)* "]"
 
 ?tmp: class | group | character
 plus_quant: tmp "+"
 star_quant: tmp "*"
-num_quant: tmp "{" ((NUMBER "," NUMBER) | (NUMBER "," NUMBER?) | ("," NUMBER)) "}"
+num_quant: tmp "{" ((NUMBER ("," NUMBER)?) | (NUMBER ",") | ("," NUMBER)) "}"
 ?quants: plus_quant | star_quant | num_quant
 
 character: LETTER | NUMBER
